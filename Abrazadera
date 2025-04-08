@@ -1,0 +1,35 @@
+
+
+# Parámetros
+diam_canon = 25  # mm
+diam_tanque = 22  # mm
+separacion = 0.5  # mm
+espesor_pared = 5  # mm
+altura = 25  # mm
+
+# Calcular distancia entre centros
+dist_centros = (diam_canon + diam_tanque) / 2 + separacion
+
+# Crear abrazadera cañón
+canon = (
+    cq.Workplane("XY")
+    .circle((diam_canon / 2) + espesor_pared)
+    .circle(diam_canon / 2)
+    .extrude(altura)
+)
+
+# Crear abrazadera tanque
+tanque = (
+    cq.Workplane("XY")
+    .moveTo(dist_centros, 0)
+    .circle((diam_tanque / 2) + espesor_pared)
+    .circle(diam_tanque / 2)
+    .extrude(altura)
+)
+
+# Unir ambas mitades
+abrazadera = canon.union(tanque)
+
+# Cortar por la mitad para simular dos partes
+abrazadera = abrazadera.cut(cq.Workplane("YZ").box(100, 100, 100).translate((0, -50, altura/2)))
+
